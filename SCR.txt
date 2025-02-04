@@ -7,13 +7,13 @@ License File: LICENSE.txt
 --------------- THIS PACKAGE ---------------
 
 Package:                     meta-nxp-security-reference-design
-Version:                     scarthgap-6.6.23-2.0.0
+Version:                     kirkstone-5.15.71-2.2.0
 Outgoing License:            MIT
 License File:                LICENSE.MIT
 Package Category:            Software build scripts
 Type of content:             Bitbake recipes
 Description and comments:    Yocto Project meta layer to enable security into the i.MX BSP
-Release Location:            https://github.com/nxp-imx-support/meta-nxp-security-reference-design
+Release Location:            https://github.com/System-Electronics/meta-nxp-security-reference-design
 Origin:                      NXP (MIT) Yocto Recipes
 
 --------------------------------------------
@@ -21,13 +21,13 @@ BSP Packages
 --------------------------------------------
 
 Package:                     linux-imx.git
-Version:                     6.6
+Version:                     5.15
 Outgoing License:            GPL-2.0 WITH Linux-syscall-note 
 License File:                COPYING
 Package Category:            BSP
 Type of Content:             source
 Description and comments:    The Linux kernel with i.MX-specific drivers
-Release Location:            https://github.com/nxp-imx/linux-imx -b lf-6.6.23-2.0.0
+Release Location:            https://github.com/System-Electronics/linux-imx-lf-5.15.71 -b main
 Origin:                      NXP (GPL-2.0)
                              kernel.org (GPL-2.0) - https://www.kernel.org/
 
@@ -40,7 +40,7 @@ License File:                Licenses/gpl-2.0.txt
 Package Category:            BSP
 Type of Content:             source
 Description and comments:    Bootloader with i.MX-specific capabilities
-Release Location:            https://github.com/nxp-imx/uboot-imx -b lf-6.6.23-2.0.0
+Release Location:            https://github.com/System-Electronics/uboot-imx-lf-5.15.71 -b main
 Origin:                      NXP (GPL-2.0)
                              Das U-Boot - Universal Bootloader (GPL-2.0) - http://www.denx.de/wiki/U-Boot/WebHome
                              Android Open Source Project (BSD-2-Clause) - https://source.android.com/
@@ -55,7 +55,7 @@ License File:                LICENSE
 Package Category:            BSP
 Type of Content:             source
 Description and comments:    Make Image BootLoader
-Release Location:            https://github.com/nxp-imx/imx-mkimage -b lf-6.6.23-2.0.0
+Release Location:            https://github.com/nxp-imx/imx-mkimage -b lf-5.15.71_2.2.0
 Origin:                      NXP (GPL-2.0)
                              Das U-Boot - Universal Bootloader (GPL-2.0) - http://www.denx.de/wiki/U-Boot/WebHome
 
