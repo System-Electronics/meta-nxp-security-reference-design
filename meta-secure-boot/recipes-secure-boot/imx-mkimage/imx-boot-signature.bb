@@ -5,7 +5,14 @@ inherit cst hab deploy features_check
 
 REQUIRED_MACHINE_FEATURES = "imx-boot-signature"
 
-DEPENDS += "nxp-cst-signer-native imx-boot"
+DEPENDS += "\
+    nxp-cst-signer-native \
+    imx-boot \
+    bc-native \
+    util-linux-native \
+"
+
+SRC_URI = "file://mx8_create_fuse_commands.sh"
 
 # For signing the imx-boot image after it has been deployed to DEPLOY_DIR_IMAGE
 do_compile[depends] += "imx-boot:do_deploy"
@@ -13,6 +20,14 @@ do_compile[depends] += "imx-boot:do_deploy"
 BOOT_IMAGE_SD = "imx-boot-${MACHINE}-sd.bin-${SIGNED_TARGET}"
 BOOT_TOOLS = "imx-boot-tools"
 BOOT_NAME = "imx-boot"
+
+CST_SRK_FUSE ?= "${CST_PATH}/crts/SRK_1_2_3_4_fuse.bin"
+
+# from imx-boot_1.0.bb
+SOC_FAMILY                  = "INVALID"
+SOC_FAMILY:mx8-generic-bsp  = "mx8"
+SOC_FAMILY:mx8m-generic-bsp = "mx8m"
+SOC_FAMILY:mx8x-generic-bsp = "mx8x"
 
 # Signs the imx-boot image. This command assumes that the PKI tree was generated.
 do_sign_boot_image() {
@@ -58,8 +73,17 @@ do_sign_boot_image:append() {
     fi
 }
 
+do_generate_fuse_cmds() {
+    bbnote "Generating fuse cmds for u-boot"
+    # Generate file with instructions for programming fuses, only mx8* for now
+    if [ "${SOC_FAMILY}" = "mx8" ] || [ "${SOC_FAMILY}" = "mx8x" ] || [ "${SOC_FAMILY}" = "mx8m" ]; then
+        ${WORKDIR}/mx8_create_fuse_commands.sh ${SOC_FAMILY} ${CST_SRK_FUSE} "${WORKDIR}/$(basename ${CST_SRK_FUSE}).u-boot-cmds"
+    fi
+}
+
 do_compile() {
     do_sign_boot_image
+    do_generate_fuse_cmds
 }
 
 do_deploy() {
@@ -69,6 +93,12 @@ do_deploy() {
         ln -sf ${DEPLOY_DIR_IMAGE}/signed-${BOOT_IMAGE_SD} ${DEPLOY_DIR_IMAGE}/${BOOT_NAME}
     else
         bbfatal "ERROR: Could not deploy Signed image"
+    fi
+
+    # Deploy U-Boot Fuse Commands, if they have been generated
+    UBOOT_CMDS=${WORKDIR}/$(basename ${CST_SRK_FUSE}).u-boot-cmds
+    if [ -e "${UBOOT_CMDS}" ]; then
+        install -m 0644 ${UBOOT_CMDS} ${DEPLOY_DIR_IMAGE}/
     fi
 }
 
