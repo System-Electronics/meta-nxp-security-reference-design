@@ -3,6 +3,7 @@ do_configure:prepend () {
     if [ -z "${CST_PATH}" ] || [ ! -e "${CST_PATH}/linux64/bin/cst" ]; then
         bbfatal 'Code-Signing tool (CST) is not installed.
         Make sure it is in your PATH or edit you configuration file
-        and set CST_PATH variable to the top directory of CST'
+        and set CST_PATH variable to the top directory of CST
+        You can download it from https://www.nxp.com/webapp/Download?colCode=IMX_CST_TOOL_NEW&appType=license'
     fi
 }
