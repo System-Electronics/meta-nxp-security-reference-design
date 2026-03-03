@@ -1,0 +1,18 @@
+# Note: These are One-Time Programmable e-fuses. Once you write them you can't go back, so get it right the first time.
+
+fuse prog -y 16 0 0x61EF7EFD
+fuse prog -y 16 1 0x5AB34B19
+fuse prog -y 16 2 0x3ECF87BC
+fuse prog -y 16 3 0xAA995330
+fuse prog -y 16 4 0xC4FBB593
+fuse prog -y 16 5 0xFA7065BF
+fuse prog -y 16 6 0xE2F8BF5D
+fuse prog -y 16 7 0x42C53C31
+
+# After the device successfully boots a signed image without generating any HAB events, it is safe to secure, or 'close', the device.
+# This is the last step in the process. Once the fuse is blown, the chip does not load an image that has not been signed using the correct PKI tree.
+# Important notes:
+# - This is again a One-Time Programmable e-fuse. Once you write it you can't go back, so get it right the first time.
+# - If anything in the previous steps wasn't done correctly, the SOM will not boot after writing this bit.
+
+ahab_close

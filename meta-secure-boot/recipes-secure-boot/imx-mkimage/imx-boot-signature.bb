@@ -12,7 +12,7 @@ DEPENDS += "\
     util-linux-native \
 "
 
-SRC_URI = "file://mx8_create_fuse_commands.sh"
+SRC_URI = "file://mx_create_fuse_commands.sh"
 
 # For signing the imx-boot image after it has been deployed to DEPLOY_DIR_IMAGE
 do_compile[depends] += "imx-boot:do_deploy"
@@ -24,10 +24,12 @@ BOOT_NAME = "imx-boot"
 CST_SRK_FUSE ?= "${CST_PATH}/crts/SRK_1_2_3_4_fuse.bin"
 
 # from imx-boot_1.0.bb
-SOC_FAMILY                  = "INVALID"
-SOC_FAMILY:mx8-generic-bsp  = "mx8"
-SOC_FAMILY:mx8m-generic-bsp = "mx8m"
-SOC_FAMILY:mx8x-generic-bsp = "mx8x"
+SOC_FAMILY                    = "INVALID"
+SOC_FAMILY:mx8-generic-bsp    = "mx8"
+SOC_FAMILY:mx8m-generic-bsp   = "mx8m"
+SOC_FAMILY:mx8x-generic-bsp   = "mx8x"
+SOC_FAMILY:mx95-generic-bsp   = "mx95"
+
 
 # Signs the imx-boot image. This command assumes that the PKI tree was generated.
 do_sign_boot_image() {
@@ -76,8 +78,8 @@ do_sign_boot_image:append() {
 do_generate_fuse_cmds() {
     bbnote "Generating fuse cmds for u-boot"
     # Generate file with instructions for programming fuses, only mx8* for now
-    if [ "${SOC_FAMILY}" = "mx8" ] || [ "${SOC_FAMILY}" = "mx8x" ] || [ "${SOC_FAMILY}" = "mx8m" ]; then
-        ${WORKDIR}/mx8_create_fuse_commands.sh ${SOC_FAMILY} ${CST_SRK_FUSE} "${WORKDIR}/$(basename ${CST_SRK_FUSE}).u-boot-cmds"
+    if [ "${SOC_FAMILY}" = "mx8" ] || [ "${SOC_FAMILY}" = "mx8x" ] || [ "${SOC_FAMILY}" = "mx8m" ] || [ "${SOC_FAMILY}" = "mx95" ]; then
+    	${WORKDIR}/mx_create_fuse_commands.sh ${SOC_FAMILY} ${CST_SRK_FUSE} "${WORKDIR}/$(basename ${CST_SRK_FUSE}).u-boot-cmds"
     fi
 }
 

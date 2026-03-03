@@ -19,9 +19,9 @@ help() {
         echo " Error: ${1}"
     fi
     echo
-    echo " Usage: ${DIR_SCRIPT}/${FILE_SCRIPT} <mx8m|mx8x|mx8> <Path to SRK HASH> <output file>"
+    echo " Usage: ${DIR_SCRIPT}/${FILE_SCRIPT} <mx8m|mx8x|mx8|mx95> <Path to SRK HASH> <output file>"
     echo
-    echo " Example: ${DIR_SCRIPT}/${FILE_SCRIPT} SRK1_2_3_4_fuse.bin fuse.cmds"
+    echo " Example: ${DIR_SCRIPT}/${FILE_SCRIPT} SRK1_2_3_4_fuse.bin mx95 fuse.cmds"
     echo
     exit 1
 }
@@ -65,6 +65,24 @@ create_fuse_cmds_mx8() {
     echo "ahab_close" >> ${fuse_log}
 }
 
+create_fuse_cmds_mx9() {
+    echo "${WARNING1}" > ${fuse_log}
+    word=0
+    bank=16
+    
+    if [ "${n_words}" -gt "7" ]; then
+        echo "WARNING: only RSA keys of length 8 are documented, the correct fuse bank for ECC keys of length 16 is unknown" >> ${fuse_log}
+    fi
+    for i in $(seq 0 7); do
+        offset=$(echo "$i * 4" | bc)
+        value=$(hexdump -s $offset -n 4  -e '/4 "0x"' -e '/4 "%X""\n"' ${cst_srk_fuse})
+        fuse_write_line $bank $word $value >> ${fuse_log}
+        word="$(expr $word + 1)"
+    done
+    echo "${WARNING2}" >> ${fuse_log}
+    echo "ahab_close" >> ${fuse_log}
+}
+
 if [ "$#" -ne 3 ]; then
     help
 fi
@@ -74,6 +92,7 @@ fuse_log="$3"
 if [ ! -f $cst_srk_fuse ]; then
     help "Could not find '$cst_srk_fuse'"
 fi
+n_words=$(($(hexdump -e '/4 "0x"' -e '/4 "%X""\n"' $cst_srk_fuse | wc -l) - 1))
 
 case ${soc} in
   mx8m)
@@ -84,6 +103,9 @@ case ${soc} in
     ;;
   mx8)
     create_fuse_cmds_mx8 722
+    ;;
+  mx95)
+    create_fuse_cmds_mx9
     ;;
   *)
     help "Unsupported SOC $1"
